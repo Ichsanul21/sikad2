@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- Tambahkan warna background dasar pada tag HTML untuk mencegah frame putih -->
-<html lang="id" class="scroll-smooth bg-[#f8fafc] dark:bg-[#050505]">
+<html lang="id" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <!-- Tambahkan viewport-fit=cover agar merender penuh hingga ke ujung layar/notch -->
@@ -70,9 +70,13 @@
             transition: background-color 0.5s ease;
         }
         .dark .light-mesh-bg {
-            background-image: none;
+            background-image: 
+                radial-gradient(at 10% 20%, rgba(16, 185, 129, 0.15) 0px, transparent 50%),
+                radial-gradient(at 90% 10%, rgba(250, 204, 21, 0.08) 0px, transparent 50%),
+                radial-gradient(at 50% 50%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+                radial-gradient(at 10% 90%, rgba(250, 204, 21, 0.08) 0px, transparent 50%),
+                radial-gradient(at 90% 90%, rgba(16, 185, 129, 0.15) 0px, transparent 50%);
         }
-
         /* Custom Cursor */
         #cursor-dot, #cursor-outline {
             position: fixed;
@@ -218,7 +222,7 @@
 
     </style>
 </head>
-<body class="font-sans antialiased text-slate-800 dark:text-slate-200 transition-colors duration-500 bg-transparent">
+<body class="font-sans antialiased text-slate-800 dark:text-slate-200 transition-colors duration-500 bg-[#f8fafc] dark:bg-[#050505]">
 
     <!-- Latar Belakang Mesh Fixed Terpisah -->
     <div class="fixed inset-0 z-[-2] light-mesh-bg pointer-events-none transition-colors duration-500"></div>
@@ -650,7 +654,7 @@
                 if(item.cat.includes('DPRD')) bgHov = "group-hover:bg-blue-500/10 group-hover:text-blue-500 text-slate-600 dark:text-slate-400";
                 
                 const card = document.createElement('button');
-                card.className = `reveal-up w-full text-left flex flex-col h-full bg-white/60 dark:bg-dark-card border border-white dark:border-white/5 p-6 sm:p-8 rounded-2xl sm:rounded-3xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-kaltim/10 hover:border-kaltim dark:hover:border-kaltim transition-all duration-300 group link-item cursor-none focus:outline-none backdrop-blur-md`;
+                card.className = `reveal-up w-full text-left flex flex-col h-full bg-white/60 dark:bg-white/[0.03] border border-white dark:border-white/10 p-6 sm:p-8 rounded-2xl sm:rounded-3xl hover:-translate-y-2 hover:shadow-2xl hover:shadow-kaltim/10 hover:border-kaltim dark:hover:border-kaltim transition-all duration-300 group link-item cursor-none focus:outline-none backdrop-blur-xl`;
                 card.onclick = () => openModal(item.id);
                 
                 card.innerHTML = `
@@ -764,7 +768,21 @@
         animateCanvas();
 
         document.querySelectorAll('.reveal-up, .clip-text:not(h1 *)').forEach(el => revealObserver.observe(el));
-        document.getElementById('theme-toggle').addEventListener('click', () => { document.documentElement.classList.toggle('dark'); });
+        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+    document.documentElement.classList.add('dark');
+} else {
+    document.documentElement.classList.remove('dark');
+}
+
+        // Toggle dan simpan ke localStorage
+        document.getElementById('theme-toggle').addEventListener('click', () => { 
+            document.documentElement.classList.toggle('dark'); 
+            if (document.documentElement.classList.contains('dark')) {
+                localStorage.theme = 'dark';
+            } else {
+                localStorage.theme = 'light';
+            }
+        });
 
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const closeMobileBtn = document.getElementById('close-mobile-btn');
